@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Comment Analyzer</title>
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    input, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin: 10px;
+    }
+    input {
+      width: 300px;
+    }
+    button {
+      background-color: #e60000;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff3333;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎥 YouTube Comment Analyzer</h1>
+  <p>Enter a YouTube Video ID (example: dQw4w9WgXcQ)</p>
+  <input type="text" id="videoId" placeholder="Enter video ID">
+  <button onclick="sendVideoId()">Analyze Comments</button>
+
+  <p id="status"></p>
+
+  <script>
+    async function sendVideoId() {
+      const videoId = document.getElementById("videoId").value.trim();
+      if (!videoId) {
+        alert("Please enter a video ID");
+        return;
+      }
+
+      document.getElementById("status").innerText = "⏳ Processing comments...";
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ video_id: videoId })
+        });
+
+        const data = await res.json();
+        document.getElementById("status").innerText = data.message || "✅ Done!";
+      } catch (e) {
+        document.getElementById("status").innerText = "❌ Error connecting to backend.";
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>
